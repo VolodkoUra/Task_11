@@ -160,10 +160,10 @@ class Car:
 
     @body_type.setter
     def body_type(self, body):
-        body_type_dict = ["Купе", "Седан", "Хетчбэк",
-                          "Универсал", "Минивен", "Микроавтобус", "Внедлрожник", "Пикап", "Кабриолет"]
-        if body.upper() in body_type_dict:
-            self.__body_type = body
+        body_type_dict = ["купе", "седан", "хетчбэк",
+                          "универсал", "минивен", "микроавтобус", "внедлрожник", "пикап", "кабриолет"]
+        if body.lower() in body_type_dict:
+            self.__body_type = body.lower()
         else:
             print("Такого кузова не суещтвует")
 
@@ -173,8 +173,8 @@ class Car:
 
     @type_fuel.setter
     def type_fuel(self, fuel):
-        fuel_list = ["Бензин", "Дизель", "Электро", "Гибрид"]
-        if fuel.upper() in fuel_list:
+        fuel_list = ["бензин", "дизель", "электро", "гибрид"]
+        if fuel.lower() in fuel_list:
             self.__type_fuel = fuel
         else:
             print("Некоректно введён тип топлива")
@@ -190,32 +190,101 @@ class Car:
         else:
             print(f"Не верно указан разгон {self.__mark} до 100 км/ч")
 
-    def Move(self, s):  # Автомобиль едет
+    def Move(self, s: int):  # Автомобиль едет
         print(f"Автомобиль проехаал {s} киллометров")
 
     def Turn(self, t):  # Автомобль поворачивает
-        if t.upper == "Right":
+        if t.lower() == "right":
             print("Автомобиль повернул на право")
-        elif t.upper == "Left":
+        elif t.lower() == "left":
             print("Автомобиль повернул на лево")
         else:
             print("Некоректно указано напрвлене поворота")
 
 
 class EmployeBank:
-    pass
+    __first_name: str  # Имя владельца счета
+    __last_name: str  # Фамилия владельца счета
+    __position: str  # Должность
+    __salary: int  # Зарплата
+
+    def __init__(self, first_name, last_name, position, salary):
+        self.__first_name = first_name
+        self.__last_name = last_name
+        self.__position = position
+        self.__salary = salary
+
+    @property
+    def first_name(self):
+        return self.__first_name
+
+    @first_name.setter
+    def first_name(self, first_name):
+        if first_name.isalpha():
+            self.__first_name = first_name
+        else:
+            print("Некоректное имя!")
+
+    @property
+    def last_name(self):
+        return self.__last_name
+
+    @last_name.setter
+    def last_name(self, last_name):
+        if last_name.isalpha():
+            self.__last_name = last_name
+        else:
+            print("Некоректная фамилия!")
+
+    @property
+    def position(self):
+        return self.__position
+
+    @position.setter
+    def position(self, position):
+        if position.isalpha():
+            self.__first_name = position
+        else:
+            print("Некоректное введена должность!")
+
+    @property
+    def salary(self):
+        return self.__salary
+
+    @salary.setter
+    def salary(self, salary):
+        if salary > 0:
+            self.__salary = salary
+        else:
+            print("Зарплата не может быть отрицательной)")
+
+    def Work(self, times: datetime.timedelta):
+        if datetime.timedelta(hours=8, minutes=0) < times < datetime.timedelta(hours=17, minutes=0):
+            if datetime.timedelta(hours=12, minutes=0) < times < datetime.timedelta(hours=13, minutes=0):
+                print(f"У {self.__first_name} {self.__last_name} сейчас обед!")
+            else:
+                print(f"{self.__first_name} {self.__last_name} работает!")
+        else:
+            print(f"{self.__first_name} {self.__last_name} отдыхает")
+
+    def GetSalary(self, date: datetime.timedelta):
+        if date == datetime.timedelta(days=20):
+            print(f"{self.__first_name} {self.__last_name} получил зарплату {self.__salary}")
+        else:
+            print("Зарплата не скоро(")
 
 
 class ClientBank:
     __first_name: str  # Имя владельца счета
     __last_name: str  # Фамилия владельца счета
-    __id: int  # Индефикатор счёта
+    __id: int = 0  # Индефикатор счёта
     __account_sum: int  # Сумма на счёте
 
     def __init__(self, first_name, last_name, account_sum):
         self.__first_name = first_name
         self.__last_name = last_name
-        self.__id += 1
+        ClientBank.__id += 1
+        self.__id = ClientBank.__id
         self.__account_sum = account_sum
 
     @property
@@ -258,13 +327,16 @@ class ClientBank:
     def Put(self, put_sum):  # Положить сумму на счёт
         self.__account_sum += put_sum
         print(f"На счёт {self.__id} положли {put_sum}")
-        print(f"Сумма на счёте {self.__id} - {self.__account_sum}")
+        print(f"Сумма на счёте {self.__id} : {self.__account_sum}")
 
     def Withdrow(self, withdrow_sum):  # Снять сумму со счёта
         if self.__account_sum > withdrow_sum:
             self.__account_sum -= withdrow_sum
             print(f"Со счёта {self.__id} снято {withdrow_sum}")
-            print(f"Сумма на счёте {self.__id} - {self.__account_sum}")
+            print(f"Сумма на счёте {self.__id} : {self.__account_sum}")
+        else:
+            print(f"Попытка снять {withdrow_sum} со счёта {self.__id} на котором {self.__account_sum}")
+            print("Недостаточно средств")
 
 
 # Тестируем класс Dog
@@ -297,13 +369,14 @@ print("=" * 50)
 
 # Тестируем класс Car
 print("Тестируем класс Car!!!!!")
-c = Car("BMW", 3.0, "Седан", "Бензин", 5.0)
+c = Car("BMW", 3.0, "Cедан", "Бензин", 5.0)
 print(f"Марка машны {c.mark}, объём двигателя  {c.engine_volume},"
       f" тип кузова {c.body_type}, тип топлива {c.type_fuel}, разгон до 100 км/ч - {c.racing} ")
 print("." * 50)
 c.mark = "w12"
 c.engine_volume = 100
 c.body_type = "11"
+c.body_type = "куПе"
 c.type_fuel = "Водород"
 c.racing = 500
 print(f"Марка машны {c.mark}, объём двигателя  {c.engine_volume},"
@@ -311,3 +384,40 @@ print(f"Марка машны {c.mark}, объём двигателя  {c.engine
 c.Move(10)
 c.Turn("Right")
 print("=" * 50)
+
+# Тестируем класс ClientBank
+print("Тестируем класс ClientBank!!!!!")
+client = ClientBank("Иван", "Иванов", 500)
+client2 = ClientBank("Андрей", "Петров", 200)
+print(f"Имя клиента {client.first_name}, фамилия {client.last_name}, "
+      f"сумма на счёте {client.account_sum}, id счёта: {client.id}")
+print(f"Имя клиента {client2.first_name}, фамилия {client2.last_name}, "
+      f"сумма на счёте {client2.account_sum}, id счёта: {client2.id}")
+print("." * 50)
+client.first_name = "T1m"
+client.last_name = "Wil2on"
+client.account_sum = -100
+print(f"Имя клиента {client.first_name}, фамилия {client.last_name}, "
+      f"сумма на счёте {client.account_sum}, id счёта: {client.id}")
+print(f"Имя клиента {client2.first_name}, фамилия {client2.last_name}, "
+      f"сумма на счёте {client2.account_sum}, id счёта: {client2.id}")
+
+client.Put(200)
+client2.Put(125)
+client.Withdrow(250)
+client2.Withdrow(700)
+print("=" * 50)
+
+# Тестируем класс EmployeBank
+print("Тестируем класс EmployeBank!!!!!")
+emp = EmployeBank("Bill", "Tompson", "Manager", 1000)
+print(f"Имя cотрудника: {emp.first_name}, фамилия: {emp.last_name}, должность  {emp.position}, зарплата {emp.salary}")
+print("." * 50)
+emp.first_name = "123"
+emp.last_name = "ttfl1"
+emp.position = "dsp12"
+emp.salary = -25
+print(f"Имя cотрудника: {emp.first_name}, фамилия: {emp.last_name}, должность  {emp.position}, зарплата {emp.salary}")
+emp.Work(datetime.timedelta(hours=16, minutes=23))
+emp.GetSalary(datetime.timedelta(days=20))
+emp.GetSalary(datetime.timedelta(days=25))
